@@ -23,7 +23,7 @@ Calculator::Calculator(QWidget *parent)
         {'7', '8', '9', '/'},
         {'4', '5', '6', '*'},
         {'1', '2', '3', '-'},
-        {'0', 177, '.', '+'}
+        {177, '0', '.', '+'}
     };
 
     QGridLayout * mainLayout = new QGridLayout();
@@ -33,7 +33,8 @@ Calculator::Calculator(QWidget *parent)
     {
         for (int j = 0; j < 4; ++j)
         {
-         if((i == 4 && j == 1) || (i == 4 && j == 2))
+         if((i == 4 && j == 0) || (i == 4 && j == 2) ||
+            (i == 0 && j == 1) || (i == 0 && j == 2))
              color = btn_gray;
          else
              color = btn_white;
@@ -57,6 +58,33 @@ Button * Calculator::createButton(const QString text, QString color )
     return button;
 }
 
+void Calculator::calculate()
+{
+    double operand_2 = m_stack.pop().toDouble();
+    QString strOperator = m_stack.pop();
+    double operand_1 = m_stack.pop().toDouble();
+    double result = 0;
+
+    if(strOperator == "+")
+    {
+        result = operand_1 + operand_2;
+    }
+    else if(strOperator == "-")
+    {
+        result = operand_1 - operand_2;
+    }
+    else if(strOperator == "*")
+    {
+        result = operand_1 * operand_2;
+    }
+    else if(strOperator == "/")
+    {
+        result = operand_1 / operand_2;
+    }
+    m_display->setText(QString::number(result, 'g',15));
+}
+
 void Calculator::slotButtonClicked(){
+
 
 }
