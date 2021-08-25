@@ -29,19 +29,20 @@ Calculator::Calculator(QWidget *parent)
     QGridLayout * mainLayout = new QGridLayout();
     mainLayout->addWidget(m_display,0,0,1,4);
 
-    for (int i = 0; i < 5; ++i) {
-     for (int j = 0; j < 4; ++j) {
-         if(j == 3)
-             color = btn_orange;
-         if(i == 0 && j == 0)
-             color = btn_red;
+    for (int i = 0; i < 5; ++i)
+    {
+        for (int j = 0; j < 4; ++j)
+        {
          if((i == 4 && j == 1) || (i == 4 && j == 2))
              color = btn_gray;
          else
              color = btn_white;
-
-      mainLayout->addWidget(createButton(buttonsBox[i][j], color), i + 2, j);
-     }
+         if(j == 3)
+             color = btn_orange;
+         if(i == 0 && j == 0)
+             color = btn_red;
+         mainLayout->addWidget(createButton(buttonsBox[i][j], color), i + 2, j);
+        }
     }
 
     setLayout(mainLayout);
