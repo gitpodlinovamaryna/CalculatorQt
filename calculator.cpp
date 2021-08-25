@@ -10,7 +10,7 @@ Calculator::Calculator(QWidget *parent)
     setStyleSheet("Calculator{background:#F0F0F5;}");
 
     QFont displayFont_16b("sans", 16, QFont::Bold);
-    QFont displayFont_14n("sans", 14, QFont::Medium);
+    QFont displayFont_14n("sans", 12, QFont::Light);
 
     QString btn_orange = "QPushButton{background:#FF6600;}";
     QString btn_white = "QPushButton{background:#FFFFFF;}";
@@ -57,11 +57,8 @@ Calculator::Calculator(QWidget *parent)
         }
 
     }
-
     setLayout(mainLayout);
-
 }
-
 
 Button * Calculator::createButton(const QString text, QString color )
 {
@@ -101,11 +98,9 @@ void Calculator::slotButtonClicked()
     QString button_text = ((QPushButton *)sender())->text();
     if(button_text == "C")
     {
-        m_stack.clear();
-        m_display->setText("");
-        return;
+        clearAll();
     }
-    if(button_text.contains(QRegExp("[0-9]"))) //digits from 1-9
+    if(button_text.contains(QRegExp("[0-9]")))
     {
         digitClicked(button_text);
     }
@@ -115,57 +110,84 @@ void Calculator::slotButtonClicked()
     }
     if(button_text == "=")
     {
-        equalClicked(button_text);
+        equalClicked();
     }
     if(button_text == ".")
     {
-        dotClicked(button_text);
+        dotClicked();
     }
     if(button_text == "%")
     {
-        percentClicked(button_text);
+        percentClicked();
     }
     if(button_text == "<")
     {
-        backspaceClicked(button_text);
+        backspaceClicked();
     }
     if(button_text == QChar(177))
     {
-        signChangeClicked(button_text);
+        signChangeClicked();
     }
 }
 
-void Calculator::digitClicked(QString)
+void Calculator::digitClicked(QString button_text)
+{
+    m_display->setText(m_display->text() + button_text);
+
+
+}
+
+void Calculator::operatorClicked(QString button_text)
 {
 
 }
 
-void Calculator::operatorClicked(QString)
+void Calculator::equalClicked()
 {
 
 }
 
-void Calculator::equalClicked(QString)
+void Calculator::dotClicked()
 {
 
 }
 
-void Calculator::dotClicked(QString)
+void Calculator::percentClicked()
+{
+    QString str = m_display->text();
+    double value = str.toDouble();
+    if(value == 0 && m_stack.count() == 2)
+    {
+        m_stack.push(str);
+        return;
+    }
+    else if(m_stack.count() == 3)
+    {
+        equalClicked();
+        return;
+    }
+    else
+    {
+        str = QString::number((value / 100), 'g', 15);
+        m_display->setText(str);
+    }
+
+m_stack.push(str);
+}
+
+void Calculator::backspaceClicked()
 {
 
 }
 
-void Calculator::percentClicked(QString)
+void Calculator::signChangeClicked()
 {
 
 }
 
-void Calculator::backspaceClicked(QString)
+void Calculator::clearAll()
 {
-
-}
-
-void Calculator::signChangeClicked(QString)
-{
-
+    m_stack.clear();
+    m_display->setText("");
+    return;
 }

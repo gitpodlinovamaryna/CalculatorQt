@@ -31,11 +31,12 @@ public:
     void calculate();
     void digitClicked(QString);
     void operatorClicked(QString);
-    void equalClicked(QString);
-    void dotClicked(QString);
-    void percentClicked(QString);
-    void backspaceClicked(QString);
-    void signChangeClicked(QString);
+    void equalClicked();
+    void dotClicked();
+    void percentClicked();
+    void backspaceClicked();
+    void signChangeClicked();
+    void clearAll();
 };
 
 #endif // CALCULATOR_H
