@@ -24,6 +24,8 @@ Calculator::Calculator(QWidget *parent)
     m_displayPrevious->setMinimumSize(150,50);
     m_display->setFont(displayFont_16b);
     m_displayPrevious->setFont(displayFont_14n);
+    m_display->setAlignment(Qt::AlignRight);
+    m_displayPrevious->setAlignment(Qt::AlignRight);
 
 
     QChar buttonsBox [5][4] = {
@@ -100,13 +102,70 @@ void Calculator::slotButtonClicked()
     if(button_text == "C")
     {
         m_stack.clear();
-        m_display->setText("0");
+        m_display->setText("");
         return;
     }
+    if(button_text.contains(QRegExp("[0-9]"))) //digits from 1-9
+    {
+        digitClicked(button_text);
+    }
+    if(button_text == "+" || button_text == "-" || button_text == "*" || button_text == "/")
+    {
+        operatorClicked(button_text );
+    }
+    if(button_text == "=")
+    {
+        equalClicked(button_text);
+    }
+    if(button_text == ".")
+    {
+        dotClicked(button_text);
+    }
+    if(button_text == "%")
+    {
+        percentClicked(button_text);
+    }
+    if(button_text == "<")
+    {
+        backspaceClicked(button_text);
+    }
+    if(button_text == QChar(177))
+    {
+        signChangeClicked(button_text);
+    }
+}
 
-    QString display_text = m_display->text();
+void Calculator::digitClicked(QString)
+{
 
+}
 
+void Calculator::operatorClicked(QString)
+{
 
+}
+
+void Calculator::equalClicked(QString)
+{
+
+}
+
+void Calculator::dotClicked(QString)
+{
+
+}
+
+void Calculator::percentClicked(QString)
+{
+
+}
+
+void Calculator::backspaceClicked(QString)
+{
+
+}
+
+void Calculator::signChangeClicked(QString)
+{
 
 }
