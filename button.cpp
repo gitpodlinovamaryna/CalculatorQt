@@ -7,6 +7,6 @@ Button::Button(const QString &text, QString color, QWidget *parent)
     QFont btn_font("SansSerif", 14, QFont::Bold);
     setFont(btn_font);
     setMinimumHeight(40);
-    setMinimumWidth(50);
+    setMinimumWidth(40);
     setStyleSheet(color);
 }

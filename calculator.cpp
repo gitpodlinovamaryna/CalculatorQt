@@ -1,5 +1,5 @@
 #include "calculator.h"
-
+#include "button.h"
 
 
 Calculator::Calculator(QWidget *parent)
@@ -48,6 +48,13 @@ Calculator::Calculator(QWidget *parent)
 
 }
 
+
+Button * Calculator::createButton(const QString text, QString color )
+{
+    Button *button = new Button(text, color);
+    connect(button, SIGNAL(clicked()), this, SLOT(slotButtonClicked()));
+    return button;
+}
 
 void Calculator::slotButtonClicked(){
 

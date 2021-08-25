@@ -19,7 +19,7 @@ private:
 
 public:
     explicit Calculator(QWidget *parent = nullptr);
-    QPushButton * createButton(const QString text, QString color );
+    Button * createButton(const QString text, QString color );
     void calculate();
 
 signals:
