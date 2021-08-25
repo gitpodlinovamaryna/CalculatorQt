@@ -9,4 +9,5 @@ Button::Button(const QString &text, QString color, QWidget *parent)
     setMinimumHeight(40);
     setMinimumWidth(40);
     setStyleSheet(color);
+    connect(this, SIGNAL(clicked()), this, SLOT(slotButtonClicked()));
 }

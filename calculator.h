@@ -15,6 +15,7 @@ class Calculator : public QWidget
 
 private:
     QLabel * m_display;
+    QLabel * m_displayPrevious;
     QStack <QString> m_stack;
 
 public:
