@@ -249,12 +249,51 @@ void Calculator::dotClicked()
 
 void Calculator::percentClicked()
 {
-
+    QString text = m_display->text();
+    double result = 0;
+    if(m_stack.count() == 0 && text.length() > 0 && text != "-")
+    {
+        result = (text.toDouble()) / 100;
+        m_displayPrevious->setText(QString::number(result, 'g', 15));
+        m_stack.push((QString::number(result, 'g',15)));
+    }
+    else if(m_stack.count() == 2 && text.length() > 0 && text != "-")
+    {
+        QString operatorSign = m_stack.pop();
+        QString operand_1 = m_stack.pop();
+        QString operand_2 = text;
+        result = ((operand_1.toDouble()) / 100) * (operand_2.toDouble());
+        m_stack.push(operand_1);
+        m_stack.push(operatorSign);
+        m_stack.push((QString::number(result, 'g',15)));
+        calculate();
+        operand_2 = m_stack.pop();
+        m_stack.push(operand_2);
+        m_displayPrevious->setText(operand_1 + operatorSign + text + "%" + "=" + operand_2);
+     }
+    m_display->setText("");
 }
 
 void Calculator::backspaceClicked()
 {
-
+    QString text = m_display->text();
+    if(text != "")
+    {
+        text.chop(1);
+        if(text.isEmpty())
+        {
+             text = "";
+        }
+        m_display->setText(text);
+    }
+    if(text.isEmpty() && m_stack.count() == 2)
+    {
+        text = m_stack.pop();
+        m_display->setText(text);
+        text = m_displayPrevious->text();
+        text.chop(1);
+        m_displayPrevious->setText(text);
+    }
 }
 
 void Calculator::signChangeClicked()
