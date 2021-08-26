@@ -218,8 +218,7 @@ void Calculator::equalClicked()
 void Calculator::dotClicked()
 {
     QString text = m_display->text();
-    QString operand_1 = m_stack.pop();
-    m_stack.push(operand_1);
+
     if(!text.contains("."))
     {
         if( text == "")
@@ -235,6 +234,8 @@ void Calculator::dotClicked()
         {
             if(m_stack.count() == 1)
             {
+                QString operand_1 = m_stack.pop();
+                m_stack.push(operand_1);
                 m_stack.push(text);
                 m_display->setText("0.");
                 m_displayPrevious->setText(operand_1 + text);
@@ -298,7 +299,17 @@ void Calculator::backspaceClicked()
 
 void Calculator::signChangeClicked()
 {
-
+    QString displayText = m_display->text();
+    double result = displayText.toDouble();
+    if(result > 0.0)
+    {
+        displayText.prepend("-");
+    }
+    else if(result < 0.0)
+    {
+        displayText.remove(0, 1);
+    }
+    m_display->setText(displayText);
 }
 
 void Calculator::clearAll()
