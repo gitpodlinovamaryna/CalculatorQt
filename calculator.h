@@ -38,6 +38,7 @@ public:
     void backspaceClicked();
     void signChangeClicked();
     void clearAll();
+    bool isDivideNull();
 };
 
 #endif // CALCULATOR_H

@@ -110,6 +110,7 @@ void Calculator::slotButtonClicked()
 void Calculator::digitClicked(QString button_text)
 {
     QString text = m_display->text();
+
     if(text == "+" || text == "-" || text =="*" || text == "/")
     {
         QString operand_1 = m_stack.pop();
@@ -120,6 +121,15 @@ void Calculator::digitClicked(QString button_text)
     }
     else
     {
+        if(text == "0")
+        {
+            text = "";
+        }
+        if(m_stack.count() == 1 && text == "")
+        {
+            m_displayPrevious->clear();
+            m_stack.pop();
+        }
      text += button_text;
      m_display->setText(text);
     }
@@ -169,11 +179,8 @@ void Calculator::operatorClicked(QString button_text)
     }
     else if(m_stack.count() == 2 && displayText.length() > 0 && displayText != "-")
     {
-        if(displayText.toDouble() == 0)
+        if(displayText.toDouble() == 0 && isDivideNull())
         {
-            QString checkOperator = m_stack.pop();
-            m_stack.push(checkOperator);
-            if(checkOperator == "/")
             return;
         }
         m_displayPrevious->setText(m_displayPrevious->text() + displayText);
@@ -185,8 +192,28 @@ void Calculator::operatorClicked(QString button_text)
 
 void Calculator::equalClicked()
 {
-
+     QString displayText = m_display->text();
+    if(m_stack.count() == 2 && displayText.length() > 0 && displayText != "-")
+    {
+        if(displayText.toDouble() == 0 && isDivideNull())
+        {
+            return;
+        }
+        m_displayPrevious->setText(m_displayPrevious->text() + displayText);
+        m_stack.push(displayText);
+        calculate();
+        m_display->setText("");
+    }
 }
+ bool Calculator::isDivideNull()
+ {
+     QString checkOperator = m_stack.pop();
+     m_stack.push(checkOperator);
+     if(checkOperator == "/")
+        return true;
+     else
+         return false;
+ }
 
 void Calculator::dotClicked()
 {
