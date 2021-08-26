@@ -17,6 +17,7 @@ private:
     QLabel *         m_display;
     QLabel *         m_displayPrevious;
     QStack <QString> m_stack;
+    QString          m_operator;
 
 public:
     explicit Calculator(QWidget *parent = nullptr);

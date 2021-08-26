@@ -22,10 +22,12 @@ Calculator::Calculator(QWidget *parent)
     m_displayPrevious = new QLabel("");
     m_display->setMinimumSize(150,50);
     m_displayPrevious->setMinimumSize(150,50);
+
     m_display->setFont(displayFont_16b);
     m_displayPrevious->setFont(displayFont_14n);
     m_display->setAlignment(Qt::AlignRight);
     m_displayPrevious->setAlignment(Qt::AlignRight);
+    m_operator = "";
 
 
     QChar buttonsBox [5][4] = {
@@ -53,6 +55,7 @@ Calculator::Calculator(QWidget *parent)
              color = btn_orange;
          if(i == 0 && j == 0)
              color = btn_red;
+
          mainLayout->addWidget(createButton(buttonsBox[i][j], color), i + 2, j);
         }
 
@@ -65,32 +68,6 @@ Button * Calculator::createButton(const QString text, QString color )
     Button *button = new Button(text, color);
     connect(button, SIGNAL(clicked()), this, SLOT(slotButtonClicked()));
     return button;
-}
-
-void Calculator::calculate()
-{
-    double operand_2 = m_stack.pop().toDouble();
-    QString strOperator = m_stack.pop();
-    double operand_1 = m_stack.pop().toDouble();
-    double result = 0;
-
-    if(strOperator == "+")
-    {
-        result = operand_1 + operand_2;
-    }
-    else if(strOperator == "-")
-    {
-        result = operand_1 - operand_2;
-    }
-    else if(strOperator == "*")
-    {
-        result = operand_1 * operand_2;
-    }
-    else if(strOperator == "/")
-    {
-        result = operand_1 / operand_2;
-    }
-    m_display->setText(QString::number(result, 'g',15));
 }
 
 void Calculator::slotButtonClicked()
@@ -132,14 +109,78 @@ void Calculator::slotButtonClicked()
 
 void Calculator::digitClicked(QString button_text)
 {
-    m_display->setText(m_display->text() + button_text);
-
-
+    QString text = m_display->text();
+    if(text == "+" || text == "-" || text =="*" || text == "/")
+    {
+        QString operand_1 = m_stack.pop();
+        m_stack.push(operand_1);
+        m_stack.push(text);
+        m_displayPrevious->setText(operand_1 + text);
+        m_display->setText(button_text);
+    }
+    else
+    {
+     text += button_text;
+     m_display->setText(text);
+    }
 }
+
+void Calculator::calculate()
+{
+    double operand_2 = m_stack.pop().toDouble();
+    QString strOperator = m_stack.pop();
+    double operand_1 = m_stack.pop().toDouble();
+    double result = 0;
+
+    if(strOperator == "+")
+    {
+        result = operand_1 + operand_2;
+    }
+    else if(strOperator == "-")
+    {
+        result = operand_1 - operand_2;
+    }
+    else if(strOperator == "*")
+    {
+        result = operand_1 * operand_2;
+    }
+    else if(strOperator == "/" && operand_2 != 0)
+    {
+        result = operand_1 / operand_2;
+    }
+    QString str_result = QString::number(result, 'g', 10);
+    m_displayPrevious->setText(m_displayPrevious->text() + "=" + str_result);
+    m_stack.push(str_result);
+}
+
 
 void Calculator::operatorClicked(QString button_text)
 {
-
+    QString displayText = m_display->text();
+    if(m_stack.isEmpty() && displayText.length() > 0 && displayText != "-")
+    {
+        m_displayPrevious->setText(displayText);
+        m_stack.push(displayText);
+        m_display->setText(button_text);
+    }
+    else if(m_stack.count() == 1)
+    {
+      m_display->setText(button_text);
+    }
+    else if(m_stack.count() == 2 && displayText.length() > 0 && displayText != "-")
+    {
+        if(displayText.toDouble() == 0)
+        {
+            QString checkOperator = m_stack.pop();
+            m_stack.push(checkOperator);
+            if(checkOperator == "/")
+            return;
+        }
+        m_displayPrevious->setText(m_displayPrevious->text() + displayText);
+        m_stack.push(displayText);
+        calculate();
+        m_display->setText(button_text);
+    }
 }
 
 void Calculator::equalClicked()
@@ -189,5 +230,6 @@ void Calculator::clearAll()
 {
     m_stack.clear();
     m_display->setText("");
+    m_displayPrevious->setText("");
     return;
 }
