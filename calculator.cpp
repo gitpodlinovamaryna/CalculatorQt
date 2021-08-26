@@ -167,7 +167,7 @@ void Calculator::calculate()
 void Calculator::operatorClicked(QString button_text)
 {
     QString displayText = m_display->text();
-    if(m_stack.isEmpty() && displayText.length() > 0 && displayText != "-")
+    if(m_stack.count() == 0 && displayText.length() > 0 && displayText != "-")
     {
         m_displayPrevious->setText(displayText);
         m_stack.push(displayText);
@@ -192,7 +192,7 @@ void Calculator::operatorClicked(QString button_text)
 
 void Calculator::equalClicked()
 {
-     QString displayText = m_display->text();
+    QString displayText = m_display->text();
     if(m_stack.count() == 2 && displayText.length() > 0 && displayText != "-")
     {
         if(displayText.toDouble() == 0 && isDivideNull())
@@ -217,30 +217,39 @@ void Calculator::equalClicked()
 
 void Calculator::dotClicked()
 {
-
+    QString text = m_display->text();
+    QString operand_1 = m_stack.pop();
+    m_stack.push(operand_1);
+    if(!text.contains("."))
+    {
+        if( text == "")
+        {
+            if(m_stack.count() == 1)
+            {
+                m_stack.pop();
+                m_displayPrevious->setText("");
+            }
+           m_display->setText("0.");
+        }
+        else if( text == "+" || text == "-" || text == "*" || text == "/")
+        {
+            if(m_stack.count() == 1)
+            {
+                m_stack.push(text);
+                m_display->setText("0.");
+                m_displayPrevious->setText(operand_1 + text);
+             }
+        }
+        else
+        {
+            m_display->setText(m_display->text() + ".");
+        }
+    }
 }
 
 void Calculator::percentClicked()
 {
-    QString str = m_display->text();
-    double value = str.toDouble();
-    if(value == 0 && m_stack.count() == 2)
-    {
-        m_stack.push(str);
-        return;
-    }
-    else if(m_stack.count() == 3)
-    {
-        equalClicked();
-        return;
-    }
-    else
-    {
-        str = QString::number((value / 100), 'g', 15);
-        m_display->setText(str);
-    }
 
-m_stack.push(str);
 }
 
 void Calculator::backspaceClicked()
