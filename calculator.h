@@ -6,7 +6,7 @@
 #include <QLabel>
 #include <QPushButton>
 #include <QGridLayout>
-#include <button.h>
+#include "button.h"
 
 
 class Calculator : public QWidget
@@ -18,17 +18,19 @@ private:
     QLabel *         m_displayPrevious;
     QStack <QString> m_stack;
     QString          m_operator;
+    bool             m_error;
 
 public:
     explicit Calculator(QWidget *parent = nullptr);
-
+    ~Calculator() override;
 signals:
 
 public slots:
     void slotButtonClicked();
 
-public:
+private:
     Button * createButton(const QString text, QString color );
+    void error();
     void calculate();
     void digitClicked(QString);
     void operatorClicked(QString);

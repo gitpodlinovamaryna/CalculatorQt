@@ -10,3 +10,4 @@ Button::Button(const QString &text, QString color, QWidget *parent)
     setMinimumWidth(40);
     setStyleSheet(color);
 }
+Button::~Button() = default;

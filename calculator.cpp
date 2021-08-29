@@ -1,17 +1,16 @@
 #include "calculator.h"
-#include "button.h"
+
 
 
 Calculator::Calculator(QWidget *parent)
     : QWidget(parent)
 {
     setWindowTitle("Calculator");
-    setFixedSize(270, 310);
+    setFixedSize(270/* height */, 310);
     setStyleSheet("Calculator{background:#F0F0F5;}");
 
     QFont displayFont_16b("sans", 16, QFont::Bold);
     QFont displayFont_14n("sans", 12, QFont::Light);
-
     QString btn_orange = "QPushButton{background:#FF6600;}";
     QString btn_white = "QPushButton{background:#FFFFFF;}";
     QString btn_red = "QPushButton{background:#CC0000;}";
@@ -28,40 +27,48 @@ Calculator::Calculator(QWidget *parent)
     m_display->setAlignment(Qt::AlignRight);
     m_displayPrevious->setAlignment(Qt::AlignRight);
     m_operator = "";
+    m_error = false;
 
-
-    QChar buttonsBox [5][4] = {
-        {'C', '<', '%', '='},
-        {'7', '8', '9', '/'},
-        {'4', '5', '6', '*'},
-        {'1', '2', '3', '-'},
-        {177, '0', '.', '+'}
-    };
+    const int rowQuantity = 5;
+    const int columnQuantity = 4;
 
     QGridLayout * mainLayout = new QGridLayout();
     mainLayout->addWidget(m_displayPrevious, 0, 0, 1, 4);
     mainLayout->addWidget(m_display, 1, 0, 1, 4);
 
-    for (int i = 0; i < 5; ++i)
+    // Button layout
+
+    QChar buttonsBox [rowQuantity][columnQuantity] = {
+        {'C', '<', '%', '/'},
+        {'7', '8', '9', '*'},
+        {'4', '5', '6', '-'},
+        {'1', '2', '3', '+'},
+        {177, '0', '.', '='} //177 ascii +/-
+    };
+
+    // Сreating and placing buttons
+
+    for (int btnRow = 0; btnRow < rowQuantity; ++btnRow)
     {
-        for (int j = 0; j < 4; ++j)
+        for (int btnColumn = 0; btnColumn < columnQuantity; ++btnColumn)
         {
-         if((i == 4 && j == 0) || (i == 4 && j == 2) ||
-            (i == 0 && j == 1) || (i == 0 && j == 2))
+         if((btnRow == 4 && btnColumn == 0) || (btnRow == 4 && btnColumn == 2) ||
+            (btnRow == 0 && btnColumn == 1) || (btnRow == 0 && btnColumn == 2))
              color = btn_gray;
          else
              color = btn_white;
-         if(j == 3)
+         if(btnColumn == 3)
              color = btn_orange;
-         if(i == 0 && j == 0)
+         if(btnRow == 0 && btnColumn == 0)
              color = btn_red;
 
-         mainLayout->addWidget(createButton(buttonsBox[i][j], color), i + 2, j);
+         mainLayout->addWidget(createButton(buttonsBox[btnRow][btnColumn], color), btnRow + 2, btnColumn);
         }
-
     }
     setLayout(mainLayout);
 }
+
+Calculator::~Calculator() = default;
 
 Button * Calculator::createButton(const QString text, QString color )
 {
@@ -72,6 +79,7 @@ Button * Calculator::createButton(const QString text, QString color )
 
 void Calculator::slotButtonClicked()
 {
+    error();
     QString button_text = ((QPushButton *)sender())->text();
     if(button_text == "C")
     {
@@ -101,7 +109,7 @@ void Calculator::slotButtonClicked()
     {
         backspaceClicked();
     }
-    if(button_text == QChar(177))
+    if(button_text == QChar(177))// ascii +/-
     {
         signChangeClicked();
     }
@@ -154,7 +162,7 @@ void Calculator::calculate()
     {
         result = operand_1 * operand_2;
     }
-    else if(strOperator == "/" && operand_2 != 0)
+    else if(strOperator == "/")
     {
         result = operand_1 / operand_2;
     }
@@ -162,7 +170,6 @@ void Calculator::calculate()
     m_displayPrevious->setText(m_displayPrevious->text() + "=" + str_result);
     m_stack.push(str_result);
 }
-
 
 void Calculator::operatorClicked(QString button_text)
 {
@@ -205,15 +212,21 @@ void Calculator::equalClicked()
         m_display->setText("");
     }
 }
- bool Calculator::isDivideNull()
- {
+
+bool Calculator::isDivideNull()
+{
      QString checkOperator = m_stack.pop();
      m_stack.push(checkOperator);
      if(checkOperator == "/")
+     {
+        m_displayPrevious->setText("Division by zero");
+        m_display->setText("is not possible");
+        m_error = true;
         return true;
+     }
      else
          return false;
- }
+}
 
 void Calculator::dotClicked()
 {
@@ -312,6 +325,16 @@ void Calculator::signChangeClicked()
     m_display->setText(displayText);
 }
 
+void Calculator::error()
+{
+    if(m_error)
+    {
+        m_displayPrevious->setText("");
+        m_display->setText("");
+        m_stack.clear();
+        m_error = false;
+    }
+}
 void Calculator::clearAll()
 {
     m_stack.clear();

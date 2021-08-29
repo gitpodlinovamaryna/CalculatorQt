@@ -8,6 +8,7 @@ class Button:public QPushButton
 {
 public:
     Button(const QString &text, QString color, QWidget *parent = 0);
+    ~Button() override;
 };
 
 #endif // BUTTON_H
