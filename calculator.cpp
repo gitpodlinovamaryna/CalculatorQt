@@ -11,17 +11,11 @@ Calculator::Calculator(QWidget *parent)
 
     QFont displayFont_16b("sans", 16, QFont::Bold);
     QFont displayFont_14n("sans", 12, QFont::Light);
-    QString btn_orange = "QPushButton{background:#FF6600;}";
-    QString btn_white = "QPushButton{background:#FFFFFF;}";
-    QString btn_red = "QPushButton{background:#CC0000;}";
-    QString btn_gray = "QPushButton{background:#B1CECE;}";
-    QString color;
 
     m_display = new QLabel("");
     m_displayPrevious = new QLabel("");
     m_display->setMinimumSize(150,50);
     m_displayPrevious->setMinimumSize(150,50);
-
     m_display->setFont(displayFont_16b);
     m_displayPrevious->setFont(displayFont_14n);
     m_display->setAlignment(Qt::AlignRight);
@@ -32,11 +26,7 @@ Calculator::Calculator(QWidget *parent)
     const int rowQuantity = 5;
     const int columnQuantity = 4;
 
-    QGridLayout * mainLayout = new QGridLayout();
-    mainLayout->addWidget(m_displayPrevious, 0, 0, 1, 4);
-    mainLayout->addWidget(m_display, 1, 0, 1, 4);
-
-    // Button layout
+   // Button layout
 
     QChar buttonsBox [rowQuantity][columnQuantity] = {
         {'C', '<', '%', '/'},
@@ -46,23 +36,17 @@ Calculator::Calculator(QWidget *parent)
         {177, '0', '.', '='} //177 ascii +/-
     };
 
+    QGridLayout * mainLayout = new QGridLayout();
+    mainLayout->addWidget(m_displayPrevious, 0, 0, 1, 4);
+    mainLayout->addWidget(m_display, 1, 0, 1, 4);
+
     // Сreating and placing buttons
 
     for (int btnRow = 0; btnRow < rowQuantity; ++btnRow)
     {
         for (int btnColumn = 0; btnColumn < columnQuantity; ++btnColumn)
         {
-         if((btnRow == 4 && btnColumn == 0) || (btnRow == 4 && btnColumn == 2) ||
-            (btnRow == 0 && btnColumn == 1) || (btnRow == 0 && btnColumn == 2))
-             color = btn_gray;
-         else
-             color = btn_white;
-         if(btnColumn == 3)
-             color = btn_orange;
-         if(btnRow == 0 && btnColumn == 0)
-             color = btn_red;
-
-         mainLayout->addWidget(createButton(buttonsBox[btnRow][btnColumn], color), btnRow + 2, btnColumn);
+             mainLayout->addWidget(createButton(buttonsBox[btnRow][btnColumn]), btnRow + 2, btnColumn);
         }
     }
     setLayout(mainLayout);
@@ -70,9 +54,9 @@ Calculator::Calculator(QWidget *parent)
 
 Calculator::~Calculator() = default;
 
-Button * Calculator::createButton(const QString text, QString color )
+Button * Calculator::createButton(const QString text)
 {
-    Button *button = new Button(text, color);
+    Button *button = new Button(text);
     connect(button, SIGNAL(clicked()), this, SLOT(slotButtonClicked()));
     return button;
 }

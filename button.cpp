@@ -1,6 +1,6 @@
 #include "button.h"
 
-Button::Button(const QString &text, QString color, QWidget *parent)
+Button::Button(const QString &text, QWidget *parent)
        : QPushButton(parent)
 {
     setText(text);
@@ -8,6 +8,5 @@ Button::Button(const QString &text, QString color, QWidget *parent)
     setFont(btn_font);
     setMinimumHeight(40);
     setMinimumWidth(40);
-    setStyleSheet(color);
 }
 Button::~Button() = default;

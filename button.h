@@ -7,7 +7,7 @@
 class Button:public QPushButton
 {
 public:
-    Button(const QString &text, QString color, QWidget *parent = 0);
+    Button(const QString &text, QWidget *parent = 0);
     ~Button() override;
 };
 
